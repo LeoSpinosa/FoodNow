@@ -5,16 +5,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 
+
+
 // Inicialize o Firebase uma vez no início da aplicação
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
-// Função de login
 Future<bool> login(String email, String password) async {
   await initializeFirebase();
   try {
-    // var auth = FirebaseAuth.instance;
     var auth = FirebaseAuth.instance;
     await auth.signInWithEmailAndPassword(email: email, password: password);
     print("Login bem-sucedido");
@@ -25,7 +25,6 @@ Future<bool> login(String email, String password) async {
   }
 }
 
-// Função de registro
 Future<bool> register(String name, String phone, String email, String password) async {
   await initializeFirebase();
   try {
@@ -62,20 +61,81 @@ Future<void> update(String name, String phone) async {
 
 Future<void> sendFeedback(String message) async {
   await initializeFirebase();
+  var auth = FirebaseAuth.instance;
   var db = FirebaseFirestore.instance;
-  await db.collection('Feedback').doc('1').set({
+  await db.collection('Feedback').doc(auth.currentUser!.uid).set({
     'messages': FieldValue.arrayUnion([message]),
   }, SetOptions(merge: true));
 }
 
-
-Future<List<QueryDocumentSnapshot>> getItens() async {
+Future<List<String>> getFeedbacks() async {
   await initializeFirebase();
+  var auth = FirebaseAuth.instance;
   var db = FirebaseFirestore.instance;
-  var itens = await db.collection('Itens').get();
-  print(itens.docs);
-  itens.docs.forEach((item) {
-    print(item.data());
-  });
-  return itens.docs;
+  var doc = await db.collection('Feedback').doc(auth.currentUser!.uid).get();
+  if (doc.exists && doc.data() != null) {
+    List<dynamic> messages = doc.data()!['messages'];
+    return List<String>.from(messages);
+  }
+  return [];
+}
+
+Future<void> addToFavorites(Map<String, String> foodItem) async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  await db.collection('Favorites').doc(auth.currentUser!.uid).set({
+    'items': FieldValue.arrayUnion([foodItem]),
+  }, SetOptions(merge: true));
+}
+
+Future<void> removeFromFavorites(Map<String, String> foodItem) async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  await db.collection('Favorites').doc(auth.currentUser!.uid).set({
+    'items': FieldValue.arrayRemove([foodItem]),
+  }, SetOptions(merge: true));
+}
+
+Future<List<Map<String, String>>> getFavorites() async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  var doc = await db.collection('Favorites').doc(auth.currentUser!.uid).get();
+  if (doc.exists && doc.data() != null) {
+    List<dynamic> items = doc.data()!['items'];
+    return List<Map<String, String>>.from(items.map((item) => Map<String, String>.from(item)));
+  }
+  return [];
+}
+
+Future<void> addCart(Map<String, String> foodItem) async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  await db.collection('Cart').doc(auth.currentUser!.uid).set({
+    'items': FieldValue.arrayUnion([foodItem]),
+  }, SetOptions(merge: true));
+}
+
+Future<void> removeCart(Map<String, String> foodItem) async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  await db.collection('Cart').doc(auth.currentUser!.uid).set({
+    'items': FieldValue.arrayRemove([foodItem]),
+  }, SetOptions(merge: true));
+}
+
+Future<List<Map<String, String>>> getCartItems() async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+  var doc = await db.collection('Cart').doc(auth.currentUser!.uid).get();
+  if (doc.exists && doc.data() != null) {
+    List<dynamic> items = doc.data()!['items'];
+    return List<Map<String, String>>.from(items.map((item) => Map<String, String>.from(item)));
+  }
+  return [];
 }

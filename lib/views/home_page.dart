@@ -1,20 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:foodnow2/components/my_BottomNavigation.dart';
+import 'package:foodnow2/components/my_appbar.dart';
+import 'package:foodnow2/services/firebase_connect.dart';
+import 'package:foodnow2/views/cart_page.dart';
+import 'package:foodnow2/views/favorite_page.dart';
+import 'package:foodnow2/views/feedback_page.dart';
+import 'package:foodnow2/views/home_content.dart';
+import 'package:foodnow2/views/user_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Início'),
-    Text('Favoritos'),
-    Text('Carrinho'),
-    Text('Feedback'),
-    Text('Conta'),
+  final List<Map<String, String>> _foodItems = [
+    {
+      'name': 'Coca-Cola',
+      'description': 'Refrigerante de Cola 350ml',
+      'imageUrl': 'https://via.placeholder.com/150',
+      'price': 'R\$ 5,00'
+    },
+    {
+      'name': 'Hambúrguer',
+      'description': 'Hambúrguer artesanal com queijo e bacon',
+      'imageUrl': 'https://via.placeholder.com/150',
+      'price': 'R\$ 15,00'
+    },
+    {
+      'name': 'Sorvete',
+      'description': 'Sorvete de chocolate 500ml',
+      'imageUrl': 'https://via.placeholder.com/150',
+      'price': 'R\$ 10,00'
+    },
+    {
+      'name': 'Pizza',
+      'description': 'Pizza de mussarela',
+      'imageUrl': 'https://via.placeholder.com/150',
+      'price': 'R\$ 25,00'
+    },
+    {
+      'name': 'Suco de Laranja',
+      'description': 'Suco de laranja natural 500ml',
+      'imageUrl': 'https://via.placeholder.com/150',
+      'price': 'R\$ 7,00'
+    },
   ];
+
+  List<Map<String, String>> _favoriteItems = [];
+  List<Map<String, String>> _cartItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    _favoriteItems = await getFavorites();
+    setState(() {});
+  }
+
+  void _toggleFavorite(Map<String, String> foodItem) async {
+    setState(() {
+      if (_favoriteItems.contains(foodItem)) {
+        _favoriteItems.remove(foodItem);
+        removeFromFavorites(foodItem);
+      } else {
+        _favoriteItems.add(foodItem);
+        addToFavorites(foodItem);
+      }
+    });
+  }
+
+  void _addToCart(Map<String, String> foodItem) {
+    setState(() {
+      _cartItems.add(foodItem);
+    });
+  }
+
+  void _removeFromCart(Map<String, String> foodItem) {
+    setState(() {
+      _cartItems.remove(foodItem);
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -25,169 +97,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Foodnow'),
-        backgroundColor: Colors.red,
+      backgroundColor: Color.fromARGB(255, 168, 168, 168),
+      appBar: MyAppBar(title: 'FoodNow'),
+      body: _widgetOptions().elementAt(_selectedIndex),
+      bottomNavigationBar: MyBottomNavigation(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for restaurants or dishes',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-            ),
-            
-            // Categories
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: SizedBox(
-                height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    CategoryCard(title: 'Pizza', icon: Icons.local_pizza),
-                    CategoryCard(title: 'Burger', icon: Icons.fastfood),
-                    CategoryCard(title: 'Sushi', icon: Icons.ramen_dining),
-                    CategoryCard(title: 'Desserts', icon: Icons.cake),
-                    CategoryCard(title: 'Drinks', icon: Icons.local_drink),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Offers
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Container(
-                height: 150,
-                color: Colors.grey[200],
-                child: Center(
-                  child: Text(
-                    'Special Offers',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            
-            // Restaurant list
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return RestaurantCard(
-                  name: 'Restaurant ${index + 1}',
-                  description: 'Description for restaurant ${index + 1}',
-                  imageUrl: 'https://via.placeholder.com/150',
-                );
-              },
-            ),
-          ],
+    );
+  }
+
+  List<Widget> _widgetOptions() => [
+        HomeContent(
+          foodItems: _foodItems,
+          favoriteItems: _favoriteItems,
+          onFavoriteToggle: _toggleFavorite,
+          addToCart: _addToCart,
         ),
-      ),
-      bottomNavigationBar: Stack(
-        children: [
-          BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Início',
-                backgroundColor: Colors.red
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'Favoritos',
-                backgroundColor: Colors.red
-              ),
-              BottomNavigationBarItem(
-                icon: SizedBox.shrink(),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.feedback),
-                label: 'Feedback',
-                backgroundColor: Colors.red
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Conta',
-                backgroundColor: Colors.red
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.white,
-            onTap: _onItemTapped,
-          ),
-          Positioned(
-            bottom: 0, 
-            left: MediaQuery.of(context).size.width / 2 - 30, 
-            child: FloatingActionButton(
-              onPressed: () => _onItemTapped(2),
-              child: Icon(Icons.shopping_cart),
-              backgroundColor: Colors.red,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  CategoryCard({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Container(
-        width: 80,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 40),
-            SizedBox(height: 10),
-            Text(title),
-          ],
+        FavoritePage(
+          favoriteItems: _favoriteItems,
+          onFavoriteToggle: _toggleFavorite,
         ),
-      ),
-    );
-  }
-}
-
-class RestaurantCard extends StatelessWidget {
-  final String name;
-  final String description;
-  final String imageUrl;
-
-  RestaurantCard({required this.name, required this.description, required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: Image.network(imageUrl),
-        title: Text(name),
-        subtitle: Text(description),
-      ),
-    );
-  }
+        CartPage(
+          cartItems: _cartItems,
+          onRemove: _removeFromCart,
+        ),
+        FeedbackPage(),
+        UpdateUser(),
+      ];
 }
