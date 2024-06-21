@@ -46,6 +46,7 @@ class _UpdateUserState extends State<UpdateUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
@@ -79,7 +80,12 @@ class _UpdateUserState extends State<UpdateUser> {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green[800],
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40))),
                   child: Text('Atualizar'),
                 ),
               ],

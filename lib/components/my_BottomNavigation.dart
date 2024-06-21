@@ -13,7 +13,7 @@ class MyBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red, // Define a cor de fundo vermelha
+      color: Colors.green[800], 
       child: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -45,8 +45,8 @@ class MyBottomNavigation extends StatelessWidget {
         selectedLabelStyle: TextStyle(color: Colors.white),
         unselectedLabelStyle: TextStyle(color: Colors.white),
         onTap: onTap,
-        backgroundColor: Colors.red, // Isso ainda é necessário para alguns casos
-        type: BottomNavigationBarType.fixed, // Certifique-se de que o tipo é "fixed"
+        backgroundColor: Colors.green[800], 
+        type: BottomNavigationBarType.fixed, 
       ),
     );
   }

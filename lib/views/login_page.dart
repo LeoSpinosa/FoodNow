@@ -31,6 +31,7 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -41,7 +42,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 30),
               Text(
                 'FoodNow',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.green[800]),
               ),
               SizedBox(height: 150),
               MyInput(
@@ -64,7 +65,7 @@ class LoginPage extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'Registre-se',
-                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                      style: TextStyle(color: Colors.green[800], decoration: TextDecoration.underline),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           Navigator.pushReplacement(
@@ -82,12 +83,13 @@ class LoginPage extends StatelessWidget {
                   authenticate();
                 },
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[800],
                   minimumSize: Size(250, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: Text('Entrar'),
+                child: Text('Entrar', style: TextStyle(color: Colors.white)),
               ),
               Spacer(),
               SizedBox(height: 20),

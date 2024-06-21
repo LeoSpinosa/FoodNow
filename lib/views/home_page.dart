@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 168, 168, 168),
+      backgroundColor: Colors.green[50],
       appBar: MyAppBar(title: 'FoodNow'),
       body: _widgetOptions().elementAt(_selectedIndex),
       bottomNavigationBar: MyBottomNavigation(

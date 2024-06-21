@@ -188,3 +188,5 @@ Future<void> finalizePurchase(List<Map<String, String>> cartItems) async {
     print('Erro ao finalizar compra: $e');
   }
 }
+
+

@@ -15,6 +15,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: Column(
         children: <Widget>[
           Expanded(
@@ -38,16 +39,27 @@ class CartPage extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              await finalizePurchase(cartItems);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            },
-            child: Text('Finalizar Compra'),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await finalizePurchase(cartItems);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[800],
+                  fixedSize: Size(190, 30), 
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text('Finalizar Compra', style: TextStyle(color: Colors.white, fontSize: 18)),
+              ),
+            ),
           ),
         ],
       ),

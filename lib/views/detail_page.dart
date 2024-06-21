@@ -14,6 +14,7 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[50],
       appBar: MyAppBar(title: foodItem['nome'] ?? 'Detalhes'),
       body: SingleChildScrollView(
         child: Column(
@@ -30,13 +31,17 @@ class DetailsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Descrição: ${foodItem['descricao'] ?? ''}"),
+                  Text("Descrição: ${foodItem['descricao'] ?? ''}",
+                  style: TextStyle(fontSize: 18), ),
                   SizedBox(height: 16.0),
-                  Text("Preço: R\$ ${foodItem['preco'] ?? ''}"),
+                  Text("Preço: R\$ ${foodItem['preco'] ?? ''}",
+                  style: TextStyle(fontSize: 18), ),
                   SizedBox(height: 16.0),
                   ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[800],
+                        padding: EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
                     onPressed: () async {
                       await addToCart(foodItem);
                       addCart(foodItem.cast<String, String>());

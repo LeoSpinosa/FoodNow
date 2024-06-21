@@ -13,6 +13,7 @@ class FavoritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: favoriteItems.length,

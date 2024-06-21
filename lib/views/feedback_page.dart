@@ -31,7 +31,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Feedback enviado!')),
       );
-      _loadFeedbacks(); 
+      _loadFeedbacks();
     }
   }
 
@@ -51,9 +51,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ElevatedButton(
             onPressed: _sendFeedback,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
+                backgroundColor: Colors.green[800],
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40))),
             child: Text('Enviar'),
           ),
           SizedBox(height: 20),
