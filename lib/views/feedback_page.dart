@@ -31,7 +31,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Feedback enviado!')),
       );
-      _loadFeedbacks(); // Reload feedbacks after sending
+      _loadFeedbacks(); 
     }
   }
 

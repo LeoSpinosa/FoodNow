@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodnow2/components/my_foodcart.dart';
 import 'package:foodnow2/services/firebase_connect.dart';
+import 'package:foodnow2/views/home_page.dart';
 
 class CartPage extends StatelessWidget {
   final List<Map<String, String>> cartItems;
@@ -14,23 +15,41 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 168, 168, 168),
-      body: ListView.builder(
-        itemCount: cartItems.length,
-        itemBuilder: (context, index) {
-          final item = cartItems[index];
-          return FoodCard(
-            name: item['name'] ?? '',
-            description: item['description'] ?? '',
-            imageUrl: item['imageUrl'] ?? '',
-            price: item['price'] ?? '',
-            isFavorite: false,  
-            onRemove: () async {
-              await removeCart(item);
-              onRemove(item);
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                final item = cartItems[index];
+                return FoodCard(
+                  name: item['nome']!,
+                  description: item['descricao']!,
+                  imageUrl: item['imagem']!,
+                  price: item['preco']!,
+                  isFavorite: false,
+                  onFavoriteToggle: () {},
+                  onRemove: () async {
+                    await onRemove(item);
+                    removeCart(item);
+                  },
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () async {
+              await finalizePurchase(cartItems);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
             },
-          );
-        },
+            child: Text('Finalizar Compra'),
+          ),
+        ],
       ),
     );
   }

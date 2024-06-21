@@ -27,7 +27,7 @@ class FoodCard extends StatelessWidget {
         leading: Image.network(
           imageUrl,
           width: 50,
-          height: 50,
+          height: 150,
           fit: BoxFit.cover,
         ),
         title: Text(name),
@@ -36,8 +36,7 @@ class FoodCard extends StatelessWidget {
           children: [
             Text(description),
             SizedBox(height: 4.0),
-            Text(
-              price,
+            Text("R\$ $price",
               style: TextStyle(
                 color: Colors.green,
                 fontWeight: FontWeight.bold,

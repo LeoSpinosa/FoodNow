@@ -3,11 +3,6 @@ import 'package:foodnow2/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-
-
-
-// Inicialize o Firebase uma vez no início da aplicação
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
@@ -25,7 +20,8 @@ Future<bool> login(String email, String password) async {
   }
 }
 
-Future<bool> register(String name, String phone, String email, String password) async {
+Future<bool> register(
+    String name, String phone, String email, String password) async {
   await initializeFirebase();
   try {
     var auth = FirebaseAuth.instance;
@@ -46,7 +42,6 @@ Future<bool> register(String name, String phone, String email, String password) 
   }
 }
 
-
 Future<void> update(String name, String phone) async {
   await initializeFirebase();
   var auth = FirebaseAuth.instance;
@@ -57,7 +52,6 @@ Future<void> update(String name, String phone) async {
     'telefone': phone,
   });
 }
-
 
 Future<void> sendFeedback(String message) async {
   await initializeFirebase();
@@ -105,7 +99,8 @@ Future<List<Map<String, String>>> getFavorites() async {
   var doc = await db.collection('Favorites').doc(auth.currentUser!.uid).get();
   if (doc.exists && doc.data() != null) {
     List<dynamic> items = doc.data()!['items'];
-    return List<Map<String, String>>.from(items.map((item) => Map<String, String>.from(item)));
+    return List<Map<String, String>>.from(
+        items.map((item) => Map<String, String>.from(item)));
   }
   return [];
 }
@@ -135,7 +130,61 @@ Future<List<Map<String, String>>> getCartItems() async {
   var doc = await db.collection('Cart').doc(auth.currentUser!.uid).get();
   if (doc.exists && doc.data() != null) {
     List<dynamic> items = doc.data()!['items'];
-    return List<Map<String, String>>.from(items.map((item) => Map<String, String>.from(item)));
+    return List<Map<String, String>>.from(
+        items.map((item) => Map<String, String>.from(item)));
   }
   return [];
+}
+
+Future<List<Map<String, dynamic>>> get_itens() async {
+  var db = FirebaseFirestore.instance;
+  var itens = await db.collection('Itens').get();
+
+  var retorno = await Future.wait(itens.docs.map((doc) async {
+    var data = doc.data();
+
+    return {
+      'nome': data['nome'] ?? '',
+      'descricao': data['descricao'] ?? '',
+      'imagem': data['image'],
+      'preco': data['preco']?.toString() ?? '0',
+    };
+  }).toList());
+
+  return retorno;
+}
+
+Future<List<Map<String, dynamic>>> get_categorias() async {
+  var db = FirebaseFirestore.instance;
+  var categorias = await db.collection('Categorias').get();
+
+  var retorno = await Future.wait(categorias.docs.map((doc) async {
+    var data = doc.data();
+
+    return {
+      'nome': data['nome'] ?? '',
+      'imagem': data['image']
+    };
+  }).toList());
+
+  return retorno;
+}
+
+Future<void> finalizePurchase(List<Map<String, String>> cartItems) async {
+  await initializeFirebase();
+  var auth = FirebaseAuth.instance;
+  var db = FirebaseFirestore.instance;
+
+  try {
+    await db.collection('Purchases').add({
+      'userId': auth.currentUser!.uid,
+      'items': cartItems,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    await db.collection('Cart').doc(auth.currentUser!.uid).delete();
+    print('Compra finalizada com sucesso!');
+  } catch (e) {
+    print('Erro ao finalizar compra: $e');
+  }
 }

@@ -17,46 +17,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Map<String, String>> _foodItems = [
-    {
-      'name': 'Coca-Cola',
-      'description': 'Refrigerante de Cola 350ml',
-      'imageUrl': 'https://via.placeholder.com/150',
-      'price': 'R\$ 5,00'
-    },
-    {
-      'name': 'Hambúrguer',
-      'description': 'Hambúrguer artesanal com queijo e bacon',
-      'imageUrl': 'https://via.placeholder.com/150',
-      'price': 'R\$ 15,00'
-    },
-    {
-      'name': 'Sorvete',
-      'description': 'Sorvete de chocolate 500ml',
-      'imageUrl': 'https://via.placeholder.com/150',
-      'price': 'R\$ 10,00'
-    },
-    {
-      'name': 'Pizza',
-      'description': 'Pizza de mussarela',
-      'imageUrl': 'https://via.placeholder.com/150',
-      'price': 'R\$ 25,00'
-    },
-    {
-      'name': 'Suco de Laranja',
-      'description': 'Suco de laranja natural 500ml',
-      'imageUrl': 'https://via.placeholder.com/150',
-      'price': 'R\$ 7,00'
-    },
-  ];
-
+  List<Map<String, dynamic>> _foodItems = [];
   List<Map<String, String>> _favoriteItems = [];
   List<Map<String, String>> _cartItems = [];
+  List<Map<String, dynamic>> _categoryItems = [];
 
   @override
   void initState() {
     super.initState();
+    _loadItems();
     _loadFavorites();
+    _loadCategories();
+  }
+
+  Future<void> _loadItems() async {
+    _foodItems = await get_itens();
+    setState(() {});
   }
 
   Future<void> _loadFavorites() async {
@@ -64,21 +40,26 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  void _toggleFavorite(Map<String, String> foodItem) async {
+  Future<void> _loadCategories() async {
+    _categoryItems = await get_categorias();
+    setState(() {});
+  }
+
+  void _toggleFavorite(Map<String, dynamic> foodItem) async {
     setState(() {
-      if (_favoriteItems.contains(foodItem)) {
-        _favoriteItems.remove(foodItem);
-        removeFromFavorites(foodItem);
+      if (_favoriteItems.any((item) => item['nome'] == foodItem['nome'])) {
+        _favoriteItems.removeWhere((item) => item['nome'] == foodItem['nome']);
+        removeFromFavorites(foodItem.cast<String, String>());
       } else {
-        _favoriteItems.add(foodItem);
-        addToFavorites(foodItem);
+        _favoriteItems.add(foodItem.cast<String, String>());
+        addToFavorites(foodItem.cast<String, String>());
       }
     });
   }
 
-  void _addToCart(Map<String, String> foodItem) {
+  void _addToCart(Map<String, dynamic> foodItem) {
     setState(() {
-      _cartItems.add(foodItem);
+      _cartItems.add(foodItem.cast<String, String>());
     });
   }
 
@@ -113,6 +94,7 @@ class _HomePageState extends State<HomePage> {
           favoriteItems: _favoriteItems,
           onFavoriteToggle: _toggleFavorite,
           addToCart: _addToCart,
+          categoryItems: _categoryItems,
         ),
         FavoritePage(
           favoriteItems: _favoriteItems,

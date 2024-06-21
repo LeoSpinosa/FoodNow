@@ -3,7 +3,7 @@ import 'package:foodnow2/components/my_foodcart.dart';
 
 class FavoritePage extends StatelessWidget {
   final List<Map<String, String>> favoriteItems;
-  final Function(Map<String, String>) onFavoriteToggle;
+  final Function(Map<String, dynamic>) onFavoriteToggle;
 
   const FavoritePage({
     required this.favoriteItems,
@@ -19,10 +19,10 @@ class FavoritePage extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = favoriteItems[index];
           return FoodCard(
-            name: item['name']!,
-            description: item['description']!,
-            imageUrl: item['imageUrl']!,
-            price: item['price']!,
+            name: item['nome']!,
+            description: item['descricao']!,
+            imageUrl: item['imagem']!,
+            price: item['preco']!,
             isFavorite: true,
             onFavoriteToggle: () => onFavoriteToggle(item),
           );
@@ -31,4 +31,3 @@ class FavoritePage extends StatelessWidget {
     );
   }
 }
-

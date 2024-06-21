@@ -3,8 +3,8 @@ import 'package:foodnow2/components/my_appbar.dart';
 import 'package:foodnow2/services/firebase_connect.dart';
 
 class DetailsPage extends StatelessWidget {
-  final Map<String, String> foodItem;
-  final Function(Map<String, String>) addToCart;
+  final Map<String, dynamic> foodItem;
+  final Function(Map<String, dynamic>) addToCart;
 
   const DetailsPage({
     required this.foodItem,
@@ -14,13 +14,13 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: foodItem['name'] ?? 'Detalhes'),
+      appBar: MyAppBar(title: foodItem['nome'] ?? 'Detalhes'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              foodItem['imageUrl'] ?? '',
+              foodItem['imagem'] ?? '',
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
@@ -30,20 +30,17 @@ class DetailsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(foodItem['description'] ?? ''),
+                  Text("Descrição: ${foodItem['descricao'] ?? ''}"),
                   SizedBox(height: 16.0),
-                  Text(foodItem['price'] ?? ''),
-                  SizedBox(height: 16.0),
-                  Text('Avaliações:'), 
-                  SizedBox(height: 16.0),
-                  Text('Localização:'), 
+                  Text("Preço: R\$ ${foodItem['preco'] ?? ''}"),
                   SizedBox(height: 16.0),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () async {
                       await addToCart(foodItem);
-                      addCart(foodItem); 
-                      Navigator.pop(context); 
+                      addCart(foodItem.cast<String, String>());
+                      Navigator.pop(context);
                     },
                     child: Text('Adicionar ao Carrinho'),
                   ),

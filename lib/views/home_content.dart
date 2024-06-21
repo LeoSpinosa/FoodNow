@@ -5,16 +5,18 @@ import 'package:foodnow2/views/detail_page.dart';
 import 'package:foodnow2/views/favorite_page.dart';
 
 class HomeContent extends StatelessWidget {
-  final List<Map<String, String>> foodItems;
+  final List<Map<String, dynamic>> foodItems;
   final List<Map<String, String>> favoriteItems;
-  final Function(Map<String, String>) onFavoriteToggle;
-  final Function(Map<String, String>) addToCart;
+  final Function(Map<String, dynamic>) onFavoriteToggle;
+  final Function(Map<String, dynamic>) addToCart;
+  final List<Map<String, dynamic>> categoryItems;
 
   const HomeContent({
     required this.foodItems,
     required this.favoriteItems,
     required this.onFavoriteToggle,
     required this.addToCart,
+    required this.categoryItems,
   });
 
   @override
@@ -37,23 +39,14 @@ class HomeContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              CategoryButton(
-                label: 'Bebida',
+            children: categoryItems.map((category) {
+              return CategoryButton(
+                label: category['nome'] ?? '',
+                imageUrl: category['imagem'] ?? '',
                 isSelected: false,
                 onTap: () {},
-              ),
-              CategoryButton(
-                label: 'Lanches',
-                isSelected: false,
-                onTap: () {},
-              ),
-              CategoryButton(
-                label: 'Sobremesa',
-                isSelected: false,
-                onTap: () {},
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ),
         Expanded(
@@ -62,7 +55,8 @@ class HomeContent extends StatelessWidget {
             itemCount: foodItems.length,
             itemBuilder: (context, index) {
               final item = foodItems[index];
-              final isFavorite = favoriteItems.any((favorite) => favorite['name'] == item['name']);
+              final isFavorite = favoriteItems
+                  .any((favorite) => favorite['nome'] == item['nome']);
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -76,10 +70,10 @@ class HomeContent extends StatelessWidget {
                   );
                 },
                 child: FoodCard(
-                  name: item['name']!,
-                  description: item['description']!,
-                  imageUrl: item['imageUrl']!,
-                  price: item['price']!,
+                  name: item['nome']!,
+                  description: item['descricao']!,
+                  imageUrl: item['imagem']!,
+                  price: item['preco']!,
                   isFavorite: isFavorite,
                   onFavoriteToggle: () => onFavoriteToggle(item),
                 ),
@@ -91,4 +85,3 @@ class HomeContent extends StatelessWidget {
     );
   }
 }
-
