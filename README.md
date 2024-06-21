@@ -1,6 +1,6 @@
 # foodnow2
 
-A new Flutter project.
+Para que funcione a aplicação, sera necessário a configurar arquivo firebase_options
 
 ## Getting Started
 
